@@ -3,12 +3,18 @@
 %option noyywrap nodefault yylineno
 
 %{
+   #include <stdio.h>
+   #include <string.h>
+
+   int chars = 0;
+   int words = 0;
+   int lines = 0;
 %}
 
 %%
-
-
-
+[a-zA-Z]+ { words++; chars += strlen(yytext); }
+\n        { chars++; lines++; }
+.         { chars++; }
 %%
 
 int main(int argc, char **argv)
@@ -17,9 +23,9 @@ int main(int argc, char **argv)
       if(!(yyin = fopen(argv[1], "r"))) {
          printf("error\n");
          return (1);
-       }
+      }
    }
    yylex();
    printf("%8d%8d%8d %s\n", lines, words, chars, argv[1]);
+   return 0;
 }
-
